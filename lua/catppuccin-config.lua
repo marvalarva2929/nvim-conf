@@ -1,52 +1,66 @@
 local M = {}
 
-function M.config() 
-		require("catppuccin").setup({
-			flavour = "mocha", -- latte, frappe, macchiato, mocha
-			background = { -- :h background
-				light = "latte",
-				dark = "mocha",
-			},
-			transparent_background = false,
-			show_end_of_buffer = false, -- show the '~' characters after the end of buffers
-			term_colors = false,
-			dim_inactive = {
-				enabled = false,
-				shade = "dark",
-				percentage = 0.15,
-			},
-			no_italic = false, -- Force no italic
-			no_bold = false, -- Force no bold
-			no_underline = false, -- Force no underline
-			styles = {
-				comments = { "italic" },
-				conditionals = { "italic" },
-				loops = {},
-				functions = {},
-				keywords = {},
-				strings = {},
-				variables = {},
-				numbers = {},
-				booleans = {},
-				properties = {},
-				types = {},
-				operators = {},
-			},
-			color_overrides = {},
-			custom_highlights = {},
-			integrations = {
-				cmp = true,
-				gitsigns = true,
-				nvimtree = true,
-				telescope = true,
-				notify = false,
-				mini = false,
-				-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
-			},
-		})
+function M.config()
+    local cfg = {
+        compile = {
+            enabled = true,
+        },
+        integrations = {
+            nvimtree = true,
+            treesitter = true,
+        },
+        dim_inactive = {
+            enabled = true,
+            shade = "dark",
+            percentage = 0.15,
+        },
+        custom_highlights = function(colors)
+            local identifier = { fg = colors.mauve, style = { "italic" } }
+            return {
+                -- Treesitter / Semantic tokens
+                ["@keyword"] = identifier,
+                ["@keyword.function"] = identifier,
+                ["@keyword.return"] = identifier,
+                ["@keyword.operator"] = identifier,
+                ["@constant.builtin"] = identifier,
+                ["@type.builtin"] = identifier,
+                ["@type.qualifier"] = identifier,
+                ["@storageclass"] = identifier,
+                ["@boolean"] = identifier,
+                ["@operator"] = identifier,
+                ["@include"] = identifier,
+                ["@repeat"] = identifier,
+                ["@method"] = { fg = colors.blue },
+                ["@method.call"] = { fg = colors.blue },
+                ["@event_name"] = { fg = colors.blue },
+                ["@lsp.type.delegate_name.cs"] = { fg = colors.blue },
+                ["@character"] = { fg = colors.green },
+                ["@namespace"] = { fg = colors.yellow, style = {} },
+                ["@constructor"] = { fg = colors.yellow },
+                ["@lsp.type.class_name.cs"] = { fg = colors.yellow },
+                ["@lsp.type.struct_name.cs"] = { fg = colors.yellow },
+                ["@lsp.type.interface_name.cs"] = { fg = colors.yellow },
+                ["@class_name"] = { fg = colors.yellow },
+                ["@variable"] = { fg = colors.teal },
+                ["@label"] = { fg = colors.teal },
+                ["@label.json"] = { fg = colors.teal },
+                ["@punctuation"] = { fg = colors.overlay2 },
+                ["@field_name"] = { fg = colors.lavender },
+                ["@local_name"] = { fg = colors.teal },
+                -- Solution Explorer
+                ["SolutionExplorerSolution"] = { fg = colors.mauve },
+                ["SolutionExplorerProject"] = { fg = colors.green },
+                ["SolutionExplorerFolder"] = { fg = colors.blue },
+                ["SolutionNugetHeader"] = { fg = colors.base, bg = colors.peach, style = { "bold" } },
+                ["SolutionNugetHighlight"] = { fg = colors.sky },
+            }
+        end,
+    }
 
-		-- setup must be called before loading
-		vim.cmd.colorscheme "catppuccin"
+    require("catppuccin").setup(cfg)
+
+    vim.g.catppuccin_flavour = "mocha"
+    vim.cmd([[colorscheme catppuccin]])
 end
 
 return M
